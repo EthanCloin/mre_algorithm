@@ -316,7 +316,8 @@ class Node:
 
     def can_communicate(self, robots, base_station):
         """Check whether the node is within communication range with
-        at least one robot or the base station"""
+        at least one robot or the base station. Returns True if given
+        node is within communication range of any robot/station"""
 
         results = []  # boolean list
         distances = []
@@ -332,13 +333,13 @@ class Node:
         distances.remove(distances[0])
 
         for distance in distances:
-            if distance <= robot.range:
+            if distance - robot.range <= robot.range:
                 results.append(True)
             else:
                 results.append(False)
 
         distance = base_station.node.crows_distance(self)
-        if distance <= base_station.range:
+        if distance - robot.range <= base_station.range:
             results.append(True)
         else:
             results.append(False)

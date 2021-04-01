@@ -56,19 +56,31 @@ def calculate_utility(configuration, environment):
          impossiblity (obstacle/shared node/boundary), loss of
          communication (maintain overlapping radii), and distance
          to nearest frontier node"""
-    # check whether position in config would be impossible
-    impossible = False
+
     utility = 0
 
+    comms = False
+    impossible = False
     for pos in configuration:
+        # check whether position in config would be impossible
         if pos.is_obstacle():
-            impossible = True
             utility -= 99999
+            impossible = True
         elif pos.is_robot():
-            impossible = True
             utility -= 99999
+            impossible = True
+        elif pos.is_base_station():
+            utility -= 99999
+            impossible = True
 
-        if not impossible:
+        # check whether communication is lost
+        if not pos.can_communicate(environment.robots, environment.base_station):
+            utility -= 99999
+            comms = False
+        else:
+            comms = True
+
+        if not impossible or not comms:
             # check distance to nearest frontier node
             nearest = pos.get_nearest_frontier(environment.frontier)
             utility -= nearest[0]
