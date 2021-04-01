@@ -46,13 +46,20 @@ def main():
                 elif event.key == pg.K_r:
                     rando = environment.robots[0].get_random_neighbor(grid)
                     environment.robots[0].move_to(environment, rando)
+                # execute algorithm
                 elif event.key == pg.K_SPACE:
                     algorithm.generate_population(environment, environment.settings)
+                # test methods
                 elif event.key == pg.K_7:
-                    test_config = [environment.robots[0].node.get_west_neighbor(environment.grid),
-                                   environment.robots[1].node.get_west_neighbor(environment.grid),
-                                   environment.robots[2].node.get_west_neighbor(environment.grid)]
+                    test_config = [environment.robots[0].node,
+                                   environment.robots[1].node,
+                                   environment.robots[2].node]
                     algorithm.calculate_utility(test_config, environment)
+                # see robot node status
+                elif event.key == pg.K_8:
+                    print(environment.robots[0].node.to_string())
+                    print(environment.robots[1].node.to_string())
+                    print(environment.robots[2].node.to_string())
 
                 environment.update_frontier(grid)
 

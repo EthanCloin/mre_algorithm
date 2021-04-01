@@ -3,7 +3,7 @@ import node
 
 
 # Constants
-SEARCH_MAX = 1
+SEARCH_MAX = 5
 POP_MAX = 20
 
 
@@ -50,7 +50,6 @@ def get_fittest(environment, population):
         if utility > best_utility:
             best_utility = utility
             best_config = config
-            print("BEST: ", best_utility)
     return best_config
 
 
@@ -61,11 +60,25 @@ def calculate_utility(configuration, environment):
          to nearest frontier node"""
     # check whether position in config would be impossible
     impossible = False
-    for pos in configuration:
-        if pos.is_obstacle() or pos.is_robot():
-            impossible = True
+    utility = 0
 
-        print(impossible)
+    for pos in configuration:
+        if pos.is_obstacle():
+            impossible = True
+            utility -= 99999
+        elif pos.is_robot():
+            impossible = True
+            utility -= 99999
+
+        if not impossible:
+            # check distance to nearest frontier node
+            nearest = pos.get_nearest_frontier(environment.frontier)
+            utility -= nearest[0]
+
+    return utility
+
+
+
 
 
 

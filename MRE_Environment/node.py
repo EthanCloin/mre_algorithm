@@ -303,7 +303,7 @@ class Node:
 
     def get_nearest_frontier(self, frontier):
         """This function searches the environment frontier and checks for the
-        closest frontier node to the given Node"""
+        closest frontier node to the given Node. Returns a tuple of form (distance, Node)"""
 
         # calculate all distances
         nearest = (99999, None)
@@ -312,7 +312,4 @@ class Node:
             if dist < nearest[0]:
                 # store distance and Node reference
                 nearest = (dist, f)
-
-        print(nearest[0])
-        print(nearest[1].to_string())
-        return nearest[1]
+        return nearest
