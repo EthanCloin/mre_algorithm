@@ -74,9 +74,11 @@ def main():
                     environment.add_robot(clicked, grid)
 
                 # else make obstacle
-                elif clicked.is_unexplored():
+                elif clicked.is_unexplored() or clicked.is_frontier():
                     clicked.set_obstacle()
                     environment.add_obstacle(clicked)
+                    if clicked in environment.frontier:
+                        environment.frontier.remove(clicked)
 
             elif pg.mouse.get_pressed()[2]: # mouse2
                 pos = pg.mouse.get_pos()
