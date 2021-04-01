@@ -18,7 +18,7 @@ class Robot:
         self.width = node.width
         self.neighbors = node.neighbors
         #self.nearest_frontier = None
-        self.pack_size = 3
+        self.pack_size = settings.robot_pack_size
         self.range = settings.robot_range # in px distance
         self.color = settings.robot_color
         self.settings = settings

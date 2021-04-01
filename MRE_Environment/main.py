@@ -6,12 +6,14 @@ from environment import Environment
 from settings import Settings
 from node import Node
 from robot import Robot
+import random
 
 
 def main():
     settings = Settings()
     environment = Environment(settings)
     grid = environment.grid
+    spawned = False
 
     # primary game loop
     running = True
@@ -25,48 +27,22 @@ def main():
 
             # Keyboard events
             elif event.type == pg.KEYDOWN:
-                if event.key == pg.K_w:
-                    environment.robots[0].move_north(grid)
-                elif event.key == pg.K_s:
-                    environment.robots[0].move_south(grid)
-                elif event.key == pg.K_d:
-                    environment.robots[0].move_east(grid)
-                elif event.key == pg.K_a:
-                    environment.robots[0].move_west(grid)
-                elif event.key == pg.K_q:
-                    environment.robots[0].move_northwest(grid)
-                elif event.key == pg.K_e:
-                    environment.robots[0].move_northeast(grid)
-                elif event.key == pg.K_z:
-                    environment.robots[0].move_southwest(grid)
-                elif event.key == pg.K_c:
-                    environment.robots[0].move_southeast(grid)
-                elif event.key == pg.K_o:
-                    environment.robots[0].move_to(grid, grid[0][0])
-                elif event.key == pg.K_r:
-                    rando = environment.robots[0].get_random_neighbor(grid)
-                    environment.robots[0].move_to(environment, rando)
-                # execute algorithm
-                elif event.key == pg.K_SPACE:
-                    algorithm.generate_population(environment, environment.settings)
-                # test methods
-                elif event.key == pg.K_7:
-                    test_comms = [
-                        environment.robots[0].node,
-                        environment.robots[1].node,
-                        environment.robots[2].node,
-                    ]
-                    for test in test_comms:
-                        print(test.can_communicate(environment.robots, environment.base_station))
-                # see robot node status
-                elif event.key == pg.K_8:
-                    print(environment.robots[0].node.to_string())
-                    print(environment.robots[1].node.to_string())
-                    print(environment.robots[2].node.to_string())
-                # test crows distance
-                elif event.key == pg.K_9:
-                    print(environment.robots[0].node.crows_distance(environment.base_station.node))
-                environment.update_frontier(grid)
+                if event.key == pg.K_SPACE:
+                    if not spawned:
+                        # default spawn
+                        environment.add_base_station(environment.grid[24][24])
+                        environment.add_robot(environment.grid[24][25], environment.grid)
+                        environment.add_robot(environment.grid[23][24], environment.grid)
+                        environment.add_robot(environment.grid[25][24], environment.grid)
+                        spawned = True
+
+                    # run algorithm and update display
+                    else:
+                        for i in range(settings.search_max):
+                            algorithm.generate_population(environment, settings)
+                            environment.update_frontier(environment.grid)
+                            environment.draw_env(environment.screen, settings.grid_rows, settings.grid_width)
+                            pg.display.update()
 
             # Mouse presses
             if pg.mouse.get_pressed()[0]: # mouse1
@@ -79,9 +55,11 @@ def main():
                     clicked.set_visited()
                     clicked.set_base_station()
                     environment.add_base_station(clicked)
+                    spawned = True
 
-                # check if all robots are placed
-                elif len(environment.robots) < Robot.pack_size and (clicked.is_unexplored() or clicked.is_frontier()):
+                # attempt to place robot
+                elif len(environment.robots) < settings.robot_pack_size and\
+                        (clicked.is_unexplored() or clicked.is_frontier()):
                     # add new robot to environment
                     environment.add_robot(clicked, grid)
 

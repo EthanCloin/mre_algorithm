@@ -99,13 +99,14 @@ class Environment:
 
     def add_robot(self, node, grid):
         """creates a Robot at given Node and adds to environment"""
-        robot = Robot(node, self.settings)
-        self.visited.append(node)
-        self.robots.append(robot)
-        for neighbor in node.get_neighbors(grid):
-            if neighbor is not None:
-                neighbor.set_frontier()
-                self.frontier.append(neighbor)
+        if len(self.robots) < self.settings.robot_pack_size:
+            robot = Robot(node, self.settings)
+            self.visited.append(node)
+            self.robots.append(robot)
+            for neighbor in node.get_neighbors(grid):
+                if neighbor is not None:
+                    neighbor.set_frontier()
+                    self.frontier.append(neighbor)
 
 
     def add_base_station(self, node):

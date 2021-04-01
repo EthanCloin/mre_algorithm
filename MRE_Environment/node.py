@@ -317,7 +317,11 @@ class Node:
     def can_communicate(self, robots, base_station):
         """Check whether the node is within communication range with
         at least one robot or the base station. Returns True if given
-        node is within communication range of any robot/station"""
+        node is within communication range of any robot/station. Currently
+        forces all robots to remain within range of base station
+
+        Should be replaced by graphstream but unclear how to implement that
+        """
 
         results = []  # boolean list
         distances = []
@@ -325,8 +329,9 @@ class Node:
         for robot in robots:
             distance = robot.node.crows_distance(self)
             # how to ignore own robot?
-            # trying ignore minum distance
+            # trying ignore min distance
             distances.append(distance)
+
 
         # sort ascending and remove first
         distances.sort()
@@ -342,9 +347,9 @@ class Node:
         if distance - robot.range <= base_station.range:
             results.append(True)
         else:
-            results.append(False)
+            # results.append(False)
+            return False
 
-        print("Results: ", results)
         if True in results:
             return True
 

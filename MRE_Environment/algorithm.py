@@ -1,30 +1,30 @@
 import node
-
-# Constants
-SEARCH_MAX = 5
-POP_MAX = 20
+import time
+import pygame as pg
 
 
 def generate_population(environment, settings):
     """This function executes a number of searches to generate a number of populations
     and (for now) moves robots to the generated configurations within the population
     Calls the utility function to decide which moves to make"""
-    for search in range(SEARCH_MAX):
-        population = []
-        for pop in range(POP_MAX):
-            config = []
-            for robot in environment.robots:
-                # randomly choose a valid direction to move
-                config.append(robot.get_random_neighbor(environment.grid))
+    time.sleep(.2)
+    population = []
+    for pop in range(settings.pop_max):
+        config = []
+        for robot in environment.robots:
+            # randomly choose a valid direction to move
+            config.append(robot.get_random_neighbor(environment.grid))
 
-            # add configuration to population
-            population.append(config)
+        # add configuration to population
+        population.append(config)
 
-        # select most fit configuration
-        best = get_fittest(environment, population)
-        environment.robots[0].move_to(environment, best[0])
-        environment.robots[1].move_to(environment, best[1])
-        environment.robots[2].move_to(environment, best[2])
+    # select most fit configuration
+    best = get_fittest(environment, population)
+
+    index = 0
+    for robot in environment.robots:
+        environment.robots[index].move_to(environment, best[index])
+        index += 1
 
     return "success"
 

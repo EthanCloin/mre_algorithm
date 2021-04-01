@@ -26,14 +26,18 @@ class Settings:
         self.grid_width = 600
         self.grid_height = 600
         self.grid_rows = 50
-        #self.grid_cols =
         self.grid_color = pg.Color('gray87')
 
         # Robot Settings
         self.robot_range = 5
+        self.robot_pack_size = 3
 
         # Base Station Settings
-        self.base_station_range = 10
+        self.base_station_range = 15
+
+        # Algorithm Settings
+        self.search_max = 25
+        self.pop_max = 50
 
 """
 Manhattan distance data: 1 node = 12px distance
