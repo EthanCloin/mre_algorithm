@@ -225,7 +225,7 @@ class Node:
         return random_node
 
     def manhattan_distance(self, node_2):
-        return abs(self.x - node_2.x) + abs(self.y - node_2.y)
+        return (abs(self.x - node_2.x) + abs(self.y - node_2.y)) / 12
 
     def find_nearest_frontier(self, environment):
         """searches within a 2 node radius and returns the nearest frontier node"""
@@ -285,3 +285,18 @@ class Node:
     def crows_distance(self, node_2):
         """Returns straight line distance ignoring obstacles"""
         return math.sqrt( (node_2.x - self.x) ** 2 + (node_2.y - self.y) ** 2 )
+
+    # def get_nearest_frontier(self, robot, frontier):
+    #     """This function searches the environment frontier and checks for the
+    #     closest frontier node to the given robot"""
+    #
+    #     # calculate all distances
+    #     distances = []
+    #     for f in frontier:
+    #         dist = robot.node.manhattan_distance(f)
+    #         distances.apppend(dist)
+    #
+    #     # sort distances
+    #     distances = sorted(distances)
+    #     print("first: ", distances[0], "second: ", distances[1])
+    #     return distances[0]

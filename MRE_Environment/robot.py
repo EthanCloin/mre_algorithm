@@ -269,3 +269,19 @@ class Robot:
         rand_index = random.randint(0, len(options) - 1)
         random_node = options[rand_index]
         return random_node
+
+    def get_nearest_frontier(self, frontier):
+        """This function searches the environment frontier and checks for the
+        closest frontier node to the given robot"""
+
+        # calculate all distances
+        nearest = (99999, None)
+        for f in frontier:
+            dist = self.node.manhattan_distance(f)
+            if dist < nearest[0]:
+                # store distance and Node reference
+                nearest = (dist, f)
+
+        print(nearest[0])
+        print(nearest[1].to_string())
+        return nearest[1]

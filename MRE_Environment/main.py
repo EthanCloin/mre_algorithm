@@ -48,14 +48,8 @@ def main():
                     environment.robots[0].move_to(environment, rando)
                 elif event.key == pg.K_SPACE:
                     algorithm.generate_population(environment, environment.settings)
-                # elif event.key == pg.K_7:
-                    # test_node_1 = environment.grid[0][0]  # possible
-                    # test_node_2 = environment.grid[49][49]  # impossible after setting obstacle
-                    # test_node_3 = environment.grid[environment.robots[0].row - 1][environment.robots[0].col]   # one left of bot boi
-                    # test = [test_node_1, test_node_2, test_node_3]
-                    #
-                    # print("Input sent: ", test_node_1.to_string(), test_node_2.to_string(), test_node_3.to_string())
-                    # algorithm.calculate_utility(test, environment)
+                elif event.key == pg.K_7:
+                    environment.robots[0].get_nearest_frontier(environment.frontier)
 
                 environment.update_frontier(grid)
 
