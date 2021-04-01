@@ -1,6 +1,7 @@
 import node
 
 
+
 # Constants
 SEARCH_MAX = 1
 POP_MAX = 20
@@ -33,7 +34,7 @@ def generate_population(environment, settings):
 def get_fittest(environment, population):
     """Returns the fittest population (3 nodes in list)"""
     # prepare best_values
-    best_utility = - 99999
+    best_utility = -999999
     best_config = None
 
     for config in population:
@@ -55,60 +56,75 @@ def get_fittest(environment, population):
 
 def calculate_utility(configuration, environment):
     """Given a configuration, calculate the utility, based on
-        impossiblity (obstacle/shared node/boundary), loss of
-        communication (maintain overlapping radii), and distance
-        to nearest frontier node"""
-
-    """
-    Instead of -3, use largest negative value instead. 
-    """
-    # note: manhattan distance / 12 =~ nodes to travel
-    utility = 0
-    for position in configuration:
-        # check for impossibility
-        impossible = False
-        comm_loss = False
-        if position.is_obstacle() or position.is_robot() or position.is_base_station():
+         impossiblity (obstacle/shared node/boundary), loss of
+         communication (maintain overlapping radii), and distance
+         to nearest frontier node"""
+    # check whether position in config would be impossible
+    impossible = False
+    for pos in configuration:
+        if pos.is_obstacle() or pos.is_robot():
             impossible = True
 
-        # check distances to robots
-        distances =[]
-        for robot in environment.robots:
-            distances.append(position.manhattan_distance(robot.node) )
-        """
-        library "graphstream" use fxn "connected component"
-        create temporary graph with cur_locations as nodes
-        two nodes will share an edge if in communication
-        
-        using function, check whether that graph is connected
-        if number of connected components in graph >> 1, then not connected
-        use that to decide
-        
-        
-        """
+        print(impossible)
 
-        # check distance to base
-        distances.append(position.manhattan_distance(environment.base_station.node))
 
-        # sort ascending
-        distances = sorted(distances)
-        closest = distances[1]  # ignoring closest, since that is itself
-        distance_to_range = closest - environment.settings.robot_range
-        if distance_to_range - environment.settings.robot_range > environment.settings.robot_range:
-            comm_loss = True
 
-        print("IMPOSSIBLE?: ", impossible)
-        print("COMMS FAIL?: ", comm_loss)
-
-        if impossible:
-            utility -= 36
-        if comm_loss:
-            utility -= 36
-        if not impossible and not comm_loss:
-            utility -= position.manhattan_distance(position.find_nearest_frontier(environment))
-            print(position.manhattan_distance(position.find_nearest_frontier(environment)))
-    print("UTILITY: ", utility)
-    return utility
+# def calculate_utility(configuration, environment):
+#     """Given a configuration, calculate the utility, based on
+#         impossiblity (obstacle/shared node/boundary), loss of
+#         communication (maintain overlapping radii), and distance
+#         to nearest frontier node"""
+#
+#     """
+#     Instead of -3, use largest negative value instead.
+#     """
+#     # note: manhattan distance / 12 =~ nodes to travel
+#     utility = 0
+#     for position in configuration:
+#         # check for impossibility
+#         impossible = False
+#         comm_loss = False
+#         if position.is_obstacle() or position.is_robot() or position.is_base_station():
+#             impossible = True
+#
+#         # check distances to robots
+#         distances =[]
+#         for robot in environment.robots:
+#             distances.append(position.manhattan_distance(robot.node) )
+#         """
+#         library "graphstream" use fxn "connected component"
+#         create temporary graph with cur_locations as nodes
+#         two nodes will share an edge if in communication
+#
+#         using function, check whether that graph is connected
+#         if number of connected components in graph >> 1, then not connected
+#         use that to decide
+#
+#
+#         """
+#
+#         # check distance to base
+#         distances.append(position.manhattan_distance(environment.base_station.node))
+#
+#         # sort ascending
+#         distances = sorted(distances)
+#         closest = distances[1]  # ignoring closest, since that is itself
+#         distance_to_range = closest - environment.settings.robot_range
+#         if distance_to_range - environment.settings.robot_range > environment.settings.robot_range:
+#             comm_loss = True
+#
+#         print("IMPOSSIBLE?: ", impossible)
+#         print("COMMS FAIL?: ", comm_loss)
+#
+#         if impossible:
+#             utility -= 36
+#         if comm_loss:
+#             utility -= 36
+#         if not impossible and not comm_loss:
+#             utility -= position.manhattan_distance(position.find_nearest_frontier(environment))
+#             print(position.manhattan_distance(position.find_nearest_frontier(environment)))
+#     print("UTILITY: ", utility)
+#     return utility
 
 """
 Currently this somewhat functions but it is unpredictable at boundaries

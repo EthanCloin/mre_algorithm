@@ -49,7 +49,10 @@ def main():
                 elif event.key == pg.K_SPACE:
                     algorithm.generate_population(environment, environment.settings)
                 elif event.key == pg.K_7:
-                    environment.robots[0].get_nearest_frontier(environment.frontier)
+                    test_config = [environment.robots[0].node.get_west_neighbor(environment.grid),
+                                   environment.robots[1].node.get_west_neighbor(environment.grid),
+                                   environment.robots[2].node.get_west_neighbor(environment.grid)]
+                    algorithm.calculate_utility(test_config, environment)
 
                 environment.update_frontier(grid)
 
@@ -66,7 +69,7 @@ def main():
                     environment.add_base_station(clicked)
 
                 # check if all robots are placed
-                elif len(environment.robots) < Robot.pack_size and clicked.is_unexplored():
+                elif len(environment.robots) < Robot.pack_size and (clicked.is_unexplored() or clicked.is_frontier()):
                     # add new robot to environment
                     environment.add_robot(clicked, grid)
 

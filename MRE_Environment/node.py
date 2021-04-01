@@ -300,3 +300,19 @@ class Node:
     #     distances = sorted(distances)
     #     print("first: ", distances[0], "second: ", distances[1])
     #     return distances[0]
+
+    def get_nearest_frontier(self, frontier):
+        """This function searches the environment frontier and checks for the
+        closest frontier node to the given Node"""
+
+        # calculate all distances
+        nearest = (99999, None)
+        for f in frontier:
+            dist = self.manhattan_distance(f)
+            if dist < nearest[0]:
+                # store distance and Node reference
+                nearest = (dist, f)
+
+        print(nearest[0])
+        print(nearest[1].to_string())
+        return nearest[1]
