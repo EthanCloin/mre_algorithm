@@ -1,7 +1,5 @@
 import node
 
-
-
 # Constants
 SEARCH_MAX = 5
 POP_MAX = 20
@@ -76,10 +74,6 @@ def calculate_utility(configuration, environment):
             utility -= nearest[0]
 
     return utility
-
-
-
-
 
 
 # def calculate_utility(configuration, environment):

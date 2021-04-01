@@ -15,7 +15,7 @@ class BaseStation:
 
     def display_range(self, screen):
         """draw a circle representing the range of base_station"""
-        pg.draw.circle(screen, self.color, self.center, self.range, 2)
+        pg.draw.circle(screen, self.color, self.center, self.range * 12, 2)
 
     def draw(self, screen):
         """Represent BaseStation as pygame rect on given pygame Surface"""

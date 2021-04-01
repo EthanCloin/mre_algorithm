@@ -51,16 +51,21 @@ def main():
                     algorithm.generate_population(environment, environment.settings)
                 # test methods
                 elif event.key == pg.K_7:
-                    test_config = [environment.robots[0].node,
-                                   environment.robots[1].node,
-                                   environment.robots[2].node]
-                    algorithm.calculate_utility(test_config, environment)
+                    test_comms = [
+                        environment.robots[0].node,
+                        environment.robots[1].node,
+                        environment.robots[2].node,
+                    ]
+                    for test in test_comms:
+                        print(test.can_communicate(environment.robots, environment.base_station))
                 # see robot node status
                 elif event.key == pg.K_8:
                     print(environment.robots[0].node.to_string())
                     print(environment.robots[1].node.to_string())
                     print(environment.robots[2].node.to_string())
-
+                # test crows distance
+                elif event.key == pg.K_9:
+                    print(environment.robots[0].node.crows_distance(environment.base_station.node))
                 environment.update_frontier(grid)
 
             # Mouse presses

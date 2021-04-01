@@ -284,7 +284,7 @@ class Node:
 
     def crows_distance(self, node_2):
         """Returns straight line distance ignoring obstacles"""
-        return math.sqrt( (node_2.x - self.x) ** 2 + (node_2.y - self.y) ** 2 )
+        return (math.sqrt( (node_2.x - self.x) ** 2 + (node_2.y - self.y) ** 2 )) / 12
 
     # def get_nearest_frontier(self, robot, frontier):
     #     """This function searches the environment frontier and checks for the
@@ -313,3 +313,38 @@ class Node:
                 # store distance and Node reference
                 nearest = (dist, f)
         return nearest
+
+    def can_communicate(self, robots, base_station):
+        """Check whether the node is within communication range with
+        at least one robot or the base station"""
+
+        results = []  # boolean list
+        distances = []
+        # Robot check
+        for robot in robots:
+            distance = robot.node.crows_distance(self)
+            # how to ignore own robot?
+            # trying ignore minum distance
+            distances.append(distance)
+
+        # sort ascending and remove first
+        distances.sort()
+        distances.remove(distances[0])
+
+        for distance in distances:
+            if distance <= robot.range:
+                results.append(True)
+            else:
+                results.append(False)
+
+        distance = base_station.node.crows_distance(self)
+        if distance <= base_station.range:
+            results.append(True)
+        else:
+            results.append(False)
+
+        print("Results: ", results)
+        if True in results:
+            return True
+
+        return False

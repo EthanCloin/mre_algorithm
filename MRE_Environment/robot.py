@@ -26,7 +26,7 @@ class Robot:
 
     def display_range(self, screen):
         """draw a circle representing the range of robot"""
-        pg.draw.circle(screen, self.color, self.center, self.range, 2)
+        pg.draw.circle(screen, self.color, self.center, self.range * 12, 2)
 
     def get_frontier_distance(self, frontiers):
         """Returns manhattan distance to nearest frontier node"""

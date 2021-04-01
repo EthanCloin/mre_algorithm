@@ -30,10 +30,10 @@ class Settings:
         self.grid_color = pg.Color('gray87')
 
         # Robot Settings
-        self.robot_range = 9 * 12
+        self.robot_range = 5
 
         # Base Station Settings
-        self.base_station_range = 15 * 12
+        self.base_station_range = 10
 
 """
 Manhattan distance data: 1 node = 12px distance
