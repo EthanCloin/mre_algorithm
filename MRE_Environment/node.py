@@ -230,6 +230,11 @@ class Node:
     def find_nearest_frontier(self, environment):
         """searches within a 2 node radius and returns the nearest frontier node"""
 
+        """
+        Update this to search all frontiers for all robots
+        
+        """
+
         # define four corners
         nodes_in_radius = []
         corners = [self.get_northwest_neighbor(environment.grid),
@@ -266,6 +271,7 @@ class Node:
             if distance[0] == shortest_distance:
                 dupes.append(distance)
         print(dupes)
+
         if len(dupes) >= 1:
             # randomly pick among best options
             best_option = dupes[random.randint(0, len(dupes) - 1)]

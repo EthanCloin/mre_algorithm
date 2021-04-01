@@ -19,7 +19,7 @@ class Environment:
         # potentially implement if the boi is slow
         # for now scan whole grid everytime
         self.visited = []
-        self.frontier = []
+        self.frontier = []  # use this list to allow all robots to search for nearest to them
         self.obstacles = []
 
     def build_screen(self, settings):

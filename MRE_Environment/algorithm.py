@@ -58,6 +58,10 @@ def calculate_utility(configuration, environment):
         impossiblity (obstacle/shared node/boundary), loss of
         communication (maintain overlapping radii), and distance
         to nearest frontier node"""
+
+    """
+    Instead of -3, use largest negative value instead. 
+    """
     # note: manhattan distance / 12 =~ nodes to travel
     utility = 0
     for position in configuration:
@@ -71,6 +75,17 @@ def calculate_utility(configuration, environment):
         distances =[]
         for robot in environment.robots:
             distances.append(position.manhattan_distance(robot.node) )
+        """
+        library "graphstream" use fxn "connected component"
+        create temporary graph with cur_locations as nodes
+        two nodes will share an edge if in communication
+        
+        using function, check whether that graph is connected
+        if number of connected components in graph >> 1, then not connected
+        use that to decide
+        
+        
+        """
 
         # check distance to base
         distances.append(position.manhattan_distance(environment.base_station.node))
