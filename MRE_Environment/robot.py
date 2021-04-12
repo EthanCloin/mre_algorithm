@@ -17,20 +17,20 @@ class Robot:
         self.y = node.y
         self.width = node.width
         self.neighbors = node.neighbors
-        #self.nearest_frontier = None
+
         self.pack_size = settings.robot_pack_size
         self.range = settings.robot_range # in px distance
         self.color = settings.robot_color
         self.settings = settings
         self.center = self.x + node.width / 2, self.y + node.width / 2
 
+        self.base_flag = False
+        self.linked = []
+
+
     def display_range(self, screen):
         """draw a circle representing the range of robot"""
         pg.draw.circle(screen, self.color, self.center, self.range * 12, 2)
-
-    def get_frontier_distance(self, frontiers):
-        """Returns manhattan distance to nearest frontier node"""
-        pass
 
     def get_base_distance(self, base_station):
         """Returns manhattan distance to base_station"""
@@ -196,7 +196,8 @@ class Robot:
 
     def to_string(self):
         string = f'row: {self.row} col: {self.col}\n' \
-                 f'x: {self.x} y: {self.y} color: {self.color}'
+                 f'x: {self.x} y: {self.y} color: {self.color}\n' \
+                 f'buddies: {self.linked}'
 
         return string
 
@@ -270,18 +271,10 @@ class Robot:
         random_node = options[rand_index]
         return random_node
 
-    def get_nearest_frontier(self, frontier):
-        """This function searches the environment frontier and checks for the
-        closest frontier node to the given robot"""
+    def check_base_comms(self, environment):
+        distance = self.node.crows_distance(environment.base_station)
+        if distance <= environment.base_station.range:
+            self.base_flag = True
+            return
 
-        # calculate all distances
-        nearest = (99999, None)
-        for f in frontier:
-            dist = self.node.manhattan_distance(f)
-            if dist < nearest[0]:
-                # store distance and Node reference
-                nearest = (dist, f)
-
-        print(nearest[0])
-        print(nearest[1].to_string())
-        return nearest[1]
+        self.base_flag = False

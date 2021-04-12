@@ -16,8 +16,7 @@ class Environment:
         self.grid = self.build_grid(settings.grid_rows, settings.grid_width)
         self.robots = []
         self.base_station = None
-        # potentially implement if the boi is slow
-        # for now scan whole grid everytime
+
         self.visited = []
         self.frontier = []  # use this list to allow all robots to search for nearest to them
         self.obstacles = []
@@ -140,3 +139,29 @@ class Environment:
                     if neighbor.is_unexplored():
                         current.set_frontier()
                         self.frontier.append(neighbor)
+
+    def check_comm_status(self):
+        """Update status of all robots"""
+        for robot in self.robots:
+            # clear linked
+            robot.linked.clear()
+            # flag if within base
+            if robot.node.crows_distance(self.base_station.node) <= self.base_station.range:
+                robot.base_flag = True
+
+            # check what other bots are in range
+            for other in self.robots:
+                # ignore self
+                if other == robot:
+                    continue
+                # add robot buddies in range to 'linked' list
+                if other.node.crows_distance(robot.node) <= 2 * robot.range:
+                    robot.linked.append(other)
+                    print("linky link")
+
+            # check all buddies and if any connected to base, then flag this one as connected
+            for buddy in robot.linked:
+                if buddy.base_flag:
+                    robot.base_flag = True
+            print("Linked: ", robot.base_flag)
+            print(robot.linked)

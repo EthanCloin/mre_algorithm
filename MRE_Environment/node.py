@@ -2,6 +2,7 @@ import pygame as pg
 import random
 import math
 
+
 class Node:
     """This class defines a Node object. Their color will
     update to represent exploration of the robots displayed
@@ -18,7 +19,8 @@ class Node:
         self.neighbors = []
         self.center = self.x + self.width / 2, self.y + self.width / 2
 
-    # Status Functions
+        # Status Functions
+        self.base_flag = False
 
     def is_obstacle(self):
         """returns True if color matches obstacle"""
@@ -286,21 +288,6 @@ class Node:
         """Returns straight line distance ignoring obstacles"""
         return (math.sqrt( (node_2.x - self.x) ** 2 + (node_2.y - self.y) ** 2 )) / 12
 
-    # def get_nearest_frontier(self, robot, frontier):
-    #     """This function searches the environment frontier and checks for the
-    #     closest frontier node to the given robot"""
-    #
-    #     # calculate all distances
-    #     distances = []
-    #     for f in frontier:
-    #         dist = robot.node.manhattan_distance(f)
-    #         distances.apppend(dist)
-    #
-    #     # sort distances
-    #     distances = sorted(distances)
-    #     print("first: ", distances[0], "second: ", distances[1])
-    #     return distances[0]
-
     def get_nearest_frontier(self, frontier):
         """This function searches the environment frontier and checks for the
         closest frontier node to the given Node. Returns a tuple of form (distance, Node)"""
@@ -322,7 +309,6 @@ class Node:
 
         Should be replaced by graphstream but unclear how to implement that
         """
-
         results = []  # boolean list
         distances = []
         # Robot check
@@ -354,3 +340,57 @@ class Node:
             return True
 
         return False
+
+    def comms_check(self, environment):
+        robots = environment.robots
+        base_station = environment.base_station
+
+        results = []
+        distances = []
+
+        # check whether the pos in range of base station
+        distance_to_base = self.crows_distance(base_station.node)
+        if distance_to_base <= base_station.range:
+            self.base_flag = True
+            return True
+
+        # check whether the robots are in range of pos
+        for robot in robots:
+            robot.check_base_comms()
+            distance_to_robot = self.crows_distance(robot.node)
+            distances.append((distance_to_robot, robot))
+        # sort ascending and remove first
+        distances.sort()
+        print("Removed: ", distances[0])
+        distances.remove(distances[0])
+
+        for distance in distances:
+            if distance[0] <= environment.settings.robot_range:
+                return True
+            # check whether
+
+    def check_comm_status_config(self, ):
+        """translate config into list of """
+        for robot in self.robots:
+            # clear linked
+            robot.linked.clear()
+            # flag if within base
+            if robot.node.crows_distance(self.base_station.node) <= self.base_station.range:
+                robot.base_flag = True
+
+            # check what other bots are in range
+            for other in self.robots:
+                # ignore self
+                if other == robot:
+                    continue
+                # add robot buddies in range to 'linked' list
+                if other.node.crows_distance(robot.node) <= 2 * robot.range:
+                    robot.linked.append(other)
+                    print("linky link")
+
+            # check all buddies and if any connected to base, then flag this one as connected
+            for buddy in robot.linked:
+                if buddy.base_flag:
+                    robot.base_flag = True
+            print("Linked: ", robot.base_flag)
+            print(robot.linked)

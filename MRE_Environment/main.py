@@ -9,40 +9,57 @@ from robot import Robot
 import random
 
 
+def default_spawn(environment):
+    """This function determines default behavior for spawning
+    robots and base station."""
+    environment.add_base_station(environment.grid[24][24])
+    environment.add_robot(environment.grid[24][25], environment.grid)
+    environment.add_robot(environment.grid[23][24], environment.grid)
+    environment.add_robot(environment.grid[25][24], environment.grid)
+    return True
+
+
+def live_update_search(environment, algorithm, settings):
+    """This function calls the provided search algorithm and provides live
+    updates to visualization on each iteration"""
+    for i in range(settings.search_max):
+        algorithm.generate_population(environment, settings)
+        environment.update_frontier(environment.grid)
+        environment.draw_env(environment.screen, settings.grid_rows, settings.grid_width)
+        pg.display.update()
+
+
 def main():
+    """Contains the primary loop for visualization"""
     settings = Settings()
     environment = Environment(settings)
     grid = environment.grid
     spawned = False
 
     # primary game loop
-    running = True
-    while running:
+    while True:
         environment.draw_env(environment.screen, settings.grid_rows, settings.grid_width)
+
+        # define exit behavior
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                running = False
                 pg.quit()
                 sys.exit()
 
             # Keyboard events
             elif event.type == pg.KEYDOWN:
+
+                # Define spacebar behavior
                 if event.key == pg.K_SPACE:
                     if not spawned:
                         # default spawn
-                        environment.add_base_station(environment.grid[24][24])
-                        environment.add_robot(environment.grid[24][25], environment.grid)
-                        environment.add_robot(environment.grid[23][24], environment.grid)
-                        environment.add_robot(environment.grid[25][24], environment.grid)
-                        spawned = True
+                        spawned = default_spawn(environment)
 
                     # run algorithm and update display
                     else:
-                        for i in range(settings.search_max):
-                            algorithm.generate_population(environment, settings)
-                            environment.update_frontier(environment.grid)
-                            environment.draw_env(environment.screen, settings.grid_rows, settings.grid_width)
-                            pg.display.update()
+                        live_update_search(environment, algorithm, settings)
+                elif event.key == pg.K_7:
+                    environment.check_comm_status()
 
             # Mouse presses
             if pg.mouse.get_pressed()[0]: # mouse1
@@ -52,8 +69,6 @@ def main():
 
                 # change to base station and add to environment
                 if environment.base_station is None:
-                    clicked.set_visited()
-                    clicked.set_base_station()
                     environment.add_base_station(clicked)
                     spawned = True
 
@@ -65,12 +80,11 @@ def main():
 
                 # else make obstacle
                 elif clicked.is_unexplored() or clicked.is_frontier():
-                    clicked.set_obstacle()
                     environment.add_obstacle(clicked)
                     if clicked in environment.frontier:
                         environment.frontier.remove(clicked)
 
-            elif pg.mouse.get_pressed()[2]: # mouse2
+            elif pg.mouse.get_pressed()[2]:  # mouse2
                 pos = pg.mouse.get_pos()
                 row, col = environment.get_clicked_grid(pos, settings.grid_rows, settings.grid_width)
                 clicked = grid[row][col]
@@ -85,9 +99,4 @@ if __name__ == '__main__':
     pg.init()
     main()
 
-"""
-Next to develop
-Add checks on leaving radius of base station
-Add checks on leaving radius of communication with pack
-Add checks on robots occupying same node  
-"""
+
