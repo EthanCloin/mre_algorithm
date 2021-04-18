@@ -386,7 +386,8 @@ class Node:
             # clear linked
             my_robot.linked.clear()
             # flag if within base
-            if my_robot.node.crows_distance(environment.base_station.node) <= environment.base_station.range:
+            if my_robot.node.crows_distance(environment.base_station.node) <= \
+                    environment.base_station.range + my_robot.range:
                 my_robot.base_flag = True
 
             # check what other bots are in range

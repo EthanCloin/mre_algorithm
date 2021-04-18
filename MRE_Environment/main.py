@@ -7,13 +7,6 @@ from environment import Environment
 from settings import Settings
 import random
 
-"""
-The number of robots: 3,4, and 5.
-Two types of obstacle patterns of choice (something similar to Assignment 2).
-random start locations.
-"""
-
-
 def spawn_three(environment):
     """This function determines behavior for spawning three
     robots and a base station."""
@@ -124,19 +117,7 @@ def main():
                 row, col = environment.get_clicked_grid(pos, my_settings.grid_rows, my_settings.grid_width)
                 clicked = grid[row][col]
 
-                # change to base station and add to environment
-                if environment.base_station is None:
-                    environment.add_base_station(clicked)
-                    spawned = True
-
-                # attempt to place robot
-                elif len(environment.robots) < my_settings.robot_pack_size and\
-                        (clicked.is_unexplored() or clicked.is_frontier()):
-                    # add new robot to environment
-                    environment.add_robot(clicked, grid)
-
-                # else make obstacle
-                elif clicked.is_unexplored() or clicked.is_frontier():
+                if clicked.is_unexplored() or clicked.is_frontier():
                     environment.add_obstacle(clicked)
                     if clicked in environment.frontier:
                         environment.frontier.remove(clicked)
