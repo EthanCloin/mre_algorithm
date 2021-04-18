@@ -1,12 +1,10 @@
 import pygame as pg
-from node import Node
 import random
 
 
 class Robot:
     """This class defines behaviors of robotic agents in
     the exploration simulation"""
-    pack_size = 3
 
     def __init__(self, node, settings):
         """Creates a Robot object given a node"""

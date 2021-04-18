@@ -62,6 +62,7 @@ class Environment:
             for node in row:
                 node.draw(self.screen)
 
+        # Draw frontier
         for each in self.frontier:
             each.set_frontier()
             each.draw(self.screen)
@@ -119,7 +120,9 @@ class Environment:
 
     def add_obstacle(self, node):
         """Add obstacle to list of obstacle nodes"""
+        print("obstacle added")
         self.obstacles.append(node)
+        self.grid[node.row][node.col].set_obstacle()
 
     def update_frontier(self, grid):
         """scans the grid and updates appropriate visited nodes

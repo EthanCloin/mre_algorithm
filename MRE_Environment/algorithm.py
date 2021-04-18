@@ -59,9 +59,13 @@ def calculate_utility(configuration, environment):
 
     utility = 0
 
-    comms = False
+    can_communicate = False
     impossible = False
+    comm_check_count = 0
+
     for pos in configuration:
+        if pos is None:
+            return -999999*3
         # check whether position in config would be impossible
         if pos.is_obstacle():
             utility -= 99999
@@ -73,14 +77,22 @@ def calculate_utility(configuration, environment):
             utility -= 99999
             impossible = True
 
-        # check whether communication is lost
-        if not pos.can_communicate(environment.robots, environment.base_station):
-            utility -= 99999
-            comms = False
-        else:
-            comms = True
+        # check whether communication is lost (once)
+        if comm_check_count == 0:
+            dummy_node = pos
+            can_communicate = dummy_node.config_can_communicate(configuration, environment)
+            comm_check_count += 1
 
-        if not impossible or not comms:
+        if not can_communicate:
+            utility -= 99999
+
+        # if not pos.can_communicate(environment.robots, environment.base_station):
+        #     utility -= 99999
+        #     comm_loss = False
+        # else:
+        #     comm_loss = True
+
+        if not impossible and can_communicate:
             # check distance to nearest frontier node
             nearest = pos.get_nearest_frontier(environment.frontier)
             utility -= nearest[0]
@@ -167,9 +179,6 @@ For now, move on to using this as the utility, since it should still provide dec
 
 
     #
-
-
-
 
 
 

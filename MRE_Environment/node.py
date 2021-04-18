@@ -1,6 +1,7 @@
 import pygame as pg
 import random
 import math
+from robot import Robot
 
 
 class Node:
@@ -369,28 +370,42 @@ class Node:
                 return True
             # check whether
 
-    def check_comm_status_config(self, ):
-        """translate config into list of """
-        for robot in self.robots:
+    def config_can_communicate(self, config, environment):
+        """translate config into list of robot objects and check their
+        range overlaps. Return True if comms are maintained"""
+
+        # translate config into list of robots
+        robots = []
+        for node in config:
+            if node is None:
+                return False
+            my_robot = Robot(node, environment.settings)
+            robots.append(my_robot)
+
+        for my_robot in robots:
             # clear linked
-            robot.linked.clear()
+            my_robot.linked.clear()
             # flag if within base
-            if robot.node.crows_distance(self.base_station.node) <= self.base_station.range:
-                robot.base_flag = True
+            if my_robot.node.crows_distance(environment.base_station.node) <= environment.base_station.range:
+                my_robot.base_flag = True
 
             # check what other bots are in range
-            for other in self.robots:
+            for other in robots:
                 # ignore self
-                if other == robot:
+                if other == my_robot:
                     continue
                 # add robot buddies in range to 'linked' list
-                if other.node.crows_distance(robot.node) <= 2 * robot.range:
-                    robot.linked.append(other)
-                    print("linky link")
+                if other.node.manhattan_distance(my_robot.node) <= 2 * my_robot.range:
+                    my_robot.linked.append(other)
 
             # check all buddies and if any connected to base, then flag this one as connected
-            for buddy in robot.linked:
+            for buddy in my_robot.linked:
                 if buddy.base_flag:
-                    robot.base_flag = True
-            print("Linked: ", robot.base_flag)
-            print(robot.linked)
+                    my_robot.base_flag = True
+
+        # after updating all 3, check whether any of the robots are out of comms range
+        for my_robot in robots:
+            if not my_robot.base_flag:
+                return False
+
+        return True

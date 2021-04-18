@@ -30,7 +30,7 @@ class Settings:
 
         # Robot Settings
         self.robot_range = 5
-        self.robot_pack_size = 3
+        self.robot_pack_size = 5
 
         # Base Station Settings
         self.base_station_range = 15
