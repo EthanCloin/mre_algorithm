@@ -36,7 +36,7 @@ class Settings:
         self.base_station_range = 15
 
         # Algorithm Settings
-        self.search_max = 25
+        self.search_max = 500
         self.pop_max = 50
 
 """
