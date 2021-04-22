@@ -7,7 +7,7 @@ def generate_population(environment, settings):
     """This function executes a number of searches to generate a number of populations
     and (for now) moves robots to the generated configurations within the population
     Calls the utility function to decide which moves to make"""
-    time.sleep(.01)
+    time.sleep(settings.wait_time)
     population = []
     for pop in range(settings.pop_max):
         config = []

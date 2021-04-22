@@ -38,6 +38,7 @@ class Settings:
         # Algorithm Settings
         self.search_max = 500
         self.pop_max = 50
+        self.wait_time = .01
 
 """
 Manhattan distance data: 1 node = 12px distance
