@@ -3,7 +3,7 @@ Implementation of a Multi Robot Exploration algorithm
 
 ## Demo Instructions:
 
-This visualization can be controlled using simpley keyboard and mouse
+This visualization can be controlled using simply keyboard and mouse
 inputs to run the requested variations of the MRE search. Upon compilation
 a pygame window containing a 50x50 grid appears. User can interact with this
 grid in the following ways:
