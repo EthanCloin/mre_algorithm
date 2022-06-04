@@ -1,5 +1,10 @@
-# mre_algorithm
-Implementation of a Multi Robot Exploration algorithm
+## Setup Instructions:
+Clone this repo and run `pip install pygame` or `pip install -r requirements.txt`
+
+You can run the simulation by executing `main.py`
+
+Follow the below instructions to draw obstacles, spawn robots, and watch them explore
+their environment, while maintaining communication distance!
 
 ## Demo Instructions:
 
@@ -8,30 +13,21 @@ inputs to run the requested variations of the MRE search. Upon compilation
 a pygame window containing a 50x50 grid appears. User can interact with this
 grid in the following ways:
 
-- ### Spawning the Robots
-  - #### Spawn Three Robots:
-  Press the '3' key on your keyboard (not numpad) to spawn 3 robots and a base
-  station. These robots have a pre-defined position near the base station. 
-  Pressing the spacebar also defaults to spawning 3 robots.
-
-  - #### Spawn Four Robots:
-  Press the '4' key on your keyboard (not numpad) to spawn 4 robots and a base
-  station. These robots have a pre-defined position near the base station.
-
-  - #### Spawn Five Robots:
-  Press the '5' key on your keyboard (not numpad) to spawn 5 robots and a base
-  station. These robots have a pre-defined position near the base station.
-
-  - #### Spawn Random Robots:
-  Press the 'r' key on your keyboard to spawn 3-5 robots and a base
-  station. These robots will spawn in random locations within a 10 tile 
-  radius of the base station.
-
-- ### Placing Obstacles
+### Placing Obstacles
   Use the mouse to click and drag the nodes that you wish to become obstacles.
   Right click on any obstacle you wish to reset as an unexplored node. Beware
   that the robots can move diagonally, and may surprise you by moving past a 
   single-layered diagonal wall.
+
+### Spawning the Robots
+#### Spawn Specific Robot Count:
+  Press '3', '4', or '5' on your keyboard to spawn the respective number of robots. These will 
+    always spawn in the same position surrounding the base station.
+
+#### Spawn Random Robots:
+  Press the 'r' key on your keyboard to spawn 3-5 robots and a base
+  station. These robots will spawn in random locations within a 10 tile 
+  radius of the base station.
 
 - ### Executing the Search
   Press the spacebar to execute the searching algorithm. Currently, the algorithm

@@ -1,11 +1,12 @@
 import sys
 import pygame as pg
 
-import algorithm
-from MRE_Environment import settings
-from environment import Environment
-from settings import Settings
+from multi_robot_exploration import algorithm
+from multi_robot_exploration import settings
+from multi_robot_exploration.environment import Environment
+from multi_robot_exploration.settings import Settings
 import random
+
 
 def spawn_three(environment):
     """This function determines behavior for spawning three
@@ -69,8 +70,15 @@ def live_update_search(environment, algorithm, settings):
     for i in range(settings.search_max):
         algorithm.generate_population(environment, settings)
         environment.update_frontier(environment.grid)
-        environment.draw_env(environment.screen, settings.grid_rows, settings.grid_width)
+        environment.draw_env(
+            environment.screen, settings.grid_rows, settings.grid_width
+        )
         pg.display.update()
+
+
+def show_instructions_popup() -> bool:
+    # popup_screen = pg.display.set_ca
+    return False
 
 
 def main():
@@ -79,10 +87,13 @@ def main():
     environment = Environment(my_settings)
     grid = environment.grid
     spawned = False
+    dismissed_instructions = False
 
     # primary game loop
     while True:
-        environment.draw_env(environment.screen, my_settings.grid_rows, my_settings.grid_width)
+        environment.draw_env(
+            environment.screen, my_settings.grid_rows, my_settings.grid_width
+        )
 
         # define exit behavior
         for event in pg.event.get():
@@ -92,6 +103,8 @@ def main():
 
             # Keyboard events
             elif event.type == pg.KEYDOWN:
+
+
 
                 # Define spacebar behavior
                 if event.key == pg.K_SPACE:
@@ -110,11 +123,15 @@ def main():
                     spawned = spawn_five(environment)
                 elif event.key == pg.K_r:
                     spawned = spawn_random(environment)
+                elif event.key == pg.K_RETURN:
+                    dismissed_instructions = True
 
             # Mouse presses
-            if pg.mouse.get_pressed()[0]: # mouse1
+            if pg.mouse.get_pressed()[0]:  # mouse1
                 pos = pg.mouse.get_pos()
-                row, col = environment.get_clicked_grid(pos, my_settings.grid_rows, my_settings.grid_width)
+                row, col = environment.get_clicked_grid(
+                    pos, my_settings.grid_rows, my_settings.grid_width
+                )
                 clicked = grid[row][col]
 
                 if clicked.is_unexplored() or clicked.is_frontier():
@@ -124,17 +141,20 @@ def main():
 
             elif pg.mouse.get_pressed()[2]:  # mouse2
                 pos = pg.mouse.get_pos()
-                row, col = environment.get_clicked_grid(pos, my_settings.grid_rows, my_settings.grid_width)
+                row, col = environment.get_clicked_grid(
+                    pos, my_settings.grid_rows, my_settings.grid_width
+                )
                 clicked = grid[row][col]
 
                 # reset node
                 clicked.set_unexplored()
-        # constantly update screen
+
+        # display instructions
+        if not dismissed_instructions:
+            dismissed_instructions = environment.show_instructions_popup(my_settings)
         pg.display.update()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pg.init()
     main()
-
-

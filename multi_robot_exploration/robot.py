@@ -17,7 +17,7 @@ class Robot:
         self.neighbors = node.neighbors
 
         self.pack_size = settings.robot_pack_size
-        self.range = settings.robot_range # in px distance
+        self.range = settings.robot_range  # in px distance
         self.color = settings.robot_color
         self.settings = settings
         self.center = self.x + node.width / 2, self.y + node.width / 2
@@ -25,19 +25,21 @@ class Robot:
         self.base_flag = False
         self.linked = []
 
+    def __repr__(self):
+        string = (
+            f"row: {self.row} col: {self.col}\n"
+            f"x: {self.x} y: {self.y} color: {self.color}\n"
+            f"buddies: {self.linked}"
+        )
+        return string
 
     def display_range(self, screen):
         """draw a circle representing the range of robot"""
         pg.draw.circle(screen, self.color, self.center, self.range * 12, 2)
 
-    def get_base_distance(self, base_station):
-        """Returns manhattan distance to base_station"""
-        pass
-
     def draw(self, screen):
         """Represent Robot as pygame rect on given pygame Surface"""
-        pg.draw.rect(screen, self.color, (self.x, self.y,
-                                          self.width, self.width))
+        pg.draw.rect(screen, self.color, (self.x, self.y, self.width, self.width))
         self.display_range(screen)
 
     def move_north(self, grid):
@@ -192,13 +194,6 @@ class Robot:
         self.update_to_node()
         self.node.set_robot()
 
-    def to_string(self):
-        string = f'row: {self.row} col: {self.col}\n' \
-                 f'x: {self.x} y: {self.y} color: {self.color}\n' \
-                 f'buddies: {self.linked}'
-
-        return string
-
     def get_neighbors(self):
         self.neighbors = self.node.get_neighbors()
 
@@ -225,19 +220,19 @@ class Robot:
 
         if directions[choice] == "n":
             self.move_north(grid)
-        elif directions[choice] == 's':
+        elif directions[choice] == "s":
             self.move_south(grid)
-        elif directions[choice] == 'e':
+        elif directions[choice] == "e":
             self.move_east(grid)
-        elif directions[choice] == 'w':
+        elif directions[choice] == "w":
             self.move_west(grid)
-        elif directions[choice] == 'nw':
+        elif directions[choice] == "nw":
             self.move_northwest(grid)
-        elif directions[choice] == 'ne':
+        elif directions[choice] == "ne":
             self.move_northeast(grid)
-        elif directions[choice] == 'sw':
+        elif directions[choice] == "sw":
             self.move_southwest(grid)
-        elif directions[choice] == 'se':
+        elif directions[choice] == "se":
             self.move_southeast(grid)
 
         return "FAILED"

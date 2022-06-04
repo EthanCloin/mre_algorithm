@@ -1,5 +1,4 @@
 import pygame as pg
-import math
 
 
 class Settings:
@@ -11,22 +10,22 @@ class Settings:
         # Screen Settings
         self.screen_width = 600
         self.screen_height = 600
-        self.bg_color = pg.Color('gray87')
+        self.bg_color = pg.Color("gray87")
 
         # Node Settings
-        self.unexplored_color = pg.Color('grey100')
-        self.visited_color = pg.Color('green3')
-        self.obstacle_color = pg.Color('grey0')
-        self.frontier_color = pg.Color('yellow1')
-        self.robot_color = pg.Color('orangered1')
-        self.base_station_color = pg.Color('orchid')
+        self.unexplored_color = pg.Color("grey100")
+        self.visited_color = pg.Color("green3")
+        self.obstacle_color = pg.Color("grey0")
+        self.frontier_color = pg.Color("yellow1")
+        self.robot_color = pg.Color("orangered1")
+        self.base_station_color = pg.Color("orchid")
         self.node_width = 20
 
         # Grid Settings
         self.grid_width = 600
         self.grid_height = 600
         self.grid_rows = 50
-        self.grid_color = pg.Color('gray87')
+        self.grid_color = pg.Color("gray87")
 
         # Robot Settings
         self.robot_range = 5
@@ -36,11 +35,6 @@ class Settings:
         self.base_station_range = 15
 
         # Algorithm Settings
-        self.search_max = 500
+        self.search_max = 100
         self.pop_max = 50
-        self.wait_time = .01
-
-"""
-Manhattan distance data: 1 node = 12px distance
-                         1 node diag = 24px distance
-"""
+        self.wait_time = 0.01
