@@ -1,13 +1,14 @@
 import pygame as pg
 import random
 import math
-from robot import Robot
+from multi_robot_exploration.robot import Robot
 
 
 class Node:
     """This class defines a Node object. Their color will
     update to represent exploration of the robots displayed
     on the Environment"""
+
     def __init__(self, row, col, width, total_rows, settings):
         """Initialize a Node as unexplored square"""
         self.row = row
@@ -52,7 +53,7 @@ class Node:
         """returns the x,y position"""
         return self.x, self.y
 
-# Setter Functions
+    # Setter Functions
     def set_obstacle(self):
         """changes Node to obstacle"""
         self.color = self.settings.obstacle_color
@@ -129,7 +130,10 @@ class Node:
 
     def get_southeast_neighbor(self, grid):
         """Returns a copied node one unit Southeast"""
-        if self.col < self.settings.grid_rows - 1 and self.row < self.settings.grid_rows - 1:
+        if (
+            self.col < self.settings.grid_rows - 1
+            and self.row < self.settings.grid_rows - 1
+        ):
             southeast_node = grid[self.row + 1][self.col + 1]
             return southeast_node
         return None
@@ -147,61 +151,47 @@ class Node:
 
         neighbors = []
         n = self.get_north_neighbor(grid)
-        # if n is not None:
-            # print("North: " + n.to_string())
         neighbors.append(n)
 
         s = self.get_south_neighbor(grid)
-        # if s is not None:
-            # print("South: " + s.to_string())
         neighbors.append(s)
 
         e = self.get_east_neighbor(grid)
-        # if e is not None:
-            # print("East: " + e.to_string())
         neighbors.append(e)
 
         w = self.get_west_neighbor(grid)
-        # if w is not None:
-            # print("West: " + w.to_string())
         neighbors.append(w)
 
         nw = self.get_northwest_neighbor(grid)
-        # print("Northwest: " + nw.to_string())
         neighbors.append(nw)
-        #
+
         ne = self.get_northeast_neighbor(grid)
-        # print("Northeast: " + ne.to_string())
         neighbors.append(ne)
-        #
+
         sw = self.get_southwest_neighbor(grid)
-        # print("Southwest: " + sw.to_string())
         neighbors.append(sw)
-        #
+
         se = self.get_southeast_neighbor(grid)
-        # print("Southeast: " + se.to_string())
         neighbors.append(se)
 
         for neighbor in neighbors:
             # check if valid
             if neighbor is None:
                 neighbors.remove(neighbor)
-                # print("Removed: none boi")
             elif neighbor.is_robot():
                 neighbors.remove(neighbor)
-                # print("Removed for robot: " + neighbor.to_string())
             elif neighbor.is_base_station():
                 neighbors.remove(neighbor)
-                # print("Removed for base station: " + neighbor.to_string())
             elif neighbor.is_obstacle():
                 neighbors.remove(neighbor)
-                # print("Removed for obstacle: " + neighbor.to_string())
 
         return neighbors
 
     def to_string(self):
-        string = f'row: {self.row} col: {self.col}\n' \
-                 f'x: {self.x} y: {self.y} color: {self.color}'
+        string = (
+            f"row: {self.row} col: {self.col}\n"
+            f"x: {self.x} y: {self.y} color: {self.color}"
+        )
 
         return string
 
@@ -219,31 +209,20 @@ class Node:
         for neighbor in self.neighbors:
             print(neighbor.to_string())
 
-    def get_random_neighbor(self, grid):
-        """randomly picks between valid neighbor or staying"""
-        options = self.get_neighbors(grid)
-        options.append(self.node)
-        random_node = options[random.randint(0, len(options) - 1)]
-        print(random_node.to_string())
-        return random_node
-
     def manhattan_distance(self, node_2):
         return (abs(self.x - node_2.x) + abs(self.y - node_2.y)) / 12
 
     def find_nearest_frontier(self, environment):
         """searches within a 2 node radius and returns the nearest frontier node"""
 
-        """
-        Update this to search all frontiers for all robots
-        
-        """
-
         # define four corners
         nodes_in_radius = []
-        corners = [self.get_northwest_neighbor(environment.grid),
-                   self.get_northeast_neighbor(environment.grid),
-                   self.get_southwest_neighbor(environment.grid),
-                   self.get_southeast_neighbor(environment.grid)]
+        corners = [
+            self.get_northwest_neighbor(environment.grid),
+            self.get_northeast_neighbor(environment.grid),
+            self.get_southwest_neighbor(environment.grid),
+            self.get_southeast_neighbor(environment.grid),
+        ]
 
         # get neighbors for each corner
         for corner in corners:
@@ -287,7 +266,7 @@ class Node:
 
     def crows_distance(self, node_2):
         """Returns straight line distance ignoring obstacles"""
-        return (math.sqrt( (node_2.x - self.x) ** 2 + (node_2.y - self.y) ** 2 )) / 12
+        return (math.sqrt((node_2.x - self.x) ** 2 + (node_2.y - self.y) ** 2)) / 12
 
     def get_nearest_frontier(self, frontier):
         """This function searches the environment frontier and checks for the
@@ -318,7 +297,6 @@ class Node:
             # how to ignore own robot?
             # trying ignore min distance
             distances.append(distance)
-
 
         # sort ascending and remove first
         distances.sort()
@@ -368,7 +346,6 @@ class Node:
         for distance in distances:
             if distance[0] <= environment.settings.robot_range:
                 return True
-            # check whether
 
     def config_can_communicate(self, config, environment):
         """translate config into list of robot objects and check their
@@ -386,8 +363,10 @@ class Node:
             # clear linked
             my_robot.linked.clear()
             # flag if within base
-            if my_robot.node.crows_distance(environment.base_station.node) <= \
-                    environment.base_station.range + my_robot.range:
+            if (
+                my_robot.node.crows_distance(environment.base_station.node)
+                <= environment.base_station.range + my_robot.range
+            ):
                 my_robot.base_flag = True
 
             # check what other bots are in range

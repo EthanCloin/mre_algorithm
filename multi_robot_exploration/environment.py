@@ -1,7 +1,7 @@
 import pygame as pg
-from base_station import BaseStation
-from node import Node
-from robot import Robot
+from multi_robot_exploration.base_station import BaseStation
+from multi_robot_exploration.node import Node
+from multi_robot_exploration.robot import Robot
 
 
 class Environment:
@@ -9,6 +9,7 @@ class Environment:
     Algorithm. It includes an "ad_hoc_map" with complete information
     and an "exploration_map" that is built by the Robots as the
     algorithm executes"""
+
     def __init__(self, settings):
         """initialize Environment"""
         self.screen = self.build_screen(settings)
@@ -18,15 +19,32 @@ class Environment:
         self.base_station = None
 
         self.visited = []
-        self.frontier = []  # use this list to allow all robots to search for nearest to them
+        self.frontier = (
+            []
+        )  # use this list to allow all robots to search for nearest to them
         self.obstacles = []
 
     def build_screen(self, settings):
         """builds the primary surface for display"""
         screen = pg.display.set_mode((settings.screen_width, settings.screen_height))
-        pg.display.set_caption('Multi-Robot Exploration')
+        pg.display.set_caption("Multi-Robot Exploration")
         screen.fill(settings.bg_color)
         return screen
+
+    def show_instructions_popup(self, settings):
+        self.screen.fill(settings.unexplored_color)
+        font = pg.font.Font(None, 20)
+        textbox = pg.Rect(25, 50, 140, 32)
+
+        text_surface = font.render(
+            "Press 'R' to spawn robots, 'Space' to set them exploring, "
+            "and 'Enter' to dismiss this message!",
+            True,
+            settings.obstacle_color,
+        )
+        self.screen.blit(text_surface, (10, self.screen.get_height() / 2))
+        pg.draw.rect(self.screen, settings.unexplored_color, textbox, 2)
+        pg.display.flip()
 
     def load_ad_hoc(self):
         # import the data defining the environment
@@ -41,7 +59,7 @@ class Environment:
         gap = width // rows
         for i in range(rows):
             grid.append([])
-            for j in range (rows):
+            for j in range(rows):
                 node = Node(i, j, gap, rows, self.settings)
                 grid[i].append(node)
 
@@ -51,9 +69,13 @@ class Environment:
         """draws a visual representation of gridlines between nodes"""
         gap = width // rows
         for i in range(rows):
-            pg.draw.line(screen, self.settings.grid_color, (0, i * gap), (width, i * gap) )
+            pg.draw.line(
+                screen, self.settings.grid_color, (0, i * gap), (width, i * gap)
+            )
             for j in range(rows):
-                pg.draw.line(screen, self.settings.grid_color, (j * gap, 0), (j * gap, width))
+                pg.draw.line(
+                    screen, self.settings.grid_color, (j * gap, 0), (j * gap, width)
+                )
 
     def draw_env(self, screen, rows, width):
         """draws the environment with all its attributes"""
@@ -87,7 +109,6 @@ class Environment:
             self.base_station.display_range(self.screen)
 
         self.draw_gridlines(screen, rows, width)
-        pg.display.update
 
     def get_clicked_grid(self, pos, rows, width):
         """returns the node located at the position clicked"""
@@ -108,7 +129,6 @@ class Environment:
                     neighbor.set_frontier()
                     self.frontier.append(neighbor)
 
-
     def add_base_station(self, node):
         """creates a BaseStation at given Node and adds to environment"""
         base_station = BaseStation(node, self.settings)
@@ -127,11 +147,7 @@ class Environment:
     def update_frontier(self, grid):
         """scans the grid and updates appropriate visited nodes
         to be frontier"""
-        # for row in range(self.settings.grid_rows):
-        #     for col in range(self.settings.grid_rows):
-        #         current = grid[row][col]
-        # set any unexplored neighbors to frontier
-        # if current.is_robot() or current.is_visited():
+
         for current in self.visited:
             # make sure frontier doesn't hold any nodes that have already been visited
             if current in self.frontier:
@@ -149,7 +165,10 @@ class Environment:
             # clear linked
             robot.linked.clear()
             # flag if within base
-            if robot.node.crows_distance(self.base_station.node) <= self.base_station.range:
+            if (
+                robot.node.crows_distance(self.base_station.node)
+                <= self.base_station.range
+            ):
                 robot.base_flag = True
 
             # check what other bots are in range
@@ -160,11 +179,8 @@ class Environment:
                 # add robot buddies in range to 'linked' list
                 if other.node.crows_distance(robot.node) <= 2 * robot.range:
                     robot.linked.append(other)
-                    print("linky link")
 
             # check all buddies and if any connected to base, then flag this one as connected
             for buddy in robot.linked:
                 if buddy.base_flag:
                     robot.base_flag = True
-            print("Linked: ", robot.base_flag)
-            print(robot.linked)
