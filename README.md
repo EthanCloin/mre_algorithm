@@ -1,3 +1,10 @@
+## Purpose
+Implement a searching algorithm with multiple agents maintaining communication with a base station. Agents each have a max communication range, and they can use each other to stay in contact with the base. Final project for Introduction to Artificial Intelligence course. 
+
+## Example
+<img src="https://drive.google.com/uc?export=view&id=1BpVijoJPtmE_ZM4Z0azj_ES0mHNoPCSz" 
+width="600" height="600"/>
+
 ## Setup Instructions:
 Clone this repo and run `pip install pygame` or `pip install -r requirements.txt`
 
